@@ -15,6 +15,8 @@ class FreshRSS_FeedDAO extends Minz_ModelPdo {
 		try {
 			if ($name === 'kind') {	//v1.20.0
 				return $this->pdo->exec('ALTER TABLE `_feed` ADD COLUMN kind SMALLINT DEFAULT 0') !== false;
+			} elseif ($name === 'lastUpdateSuccess') {
+				return $this->pdo->exec('ALTER TABLE `_feed` ADD COLUMN lastUpdateSuccess BIGINT DEFAULT 0') !== false;
 			}
 		} catch (Exception $e) {
 			Minz_Log::error(__METHOD__ . ' error: ' . $e->getMessage());
@@ -27,7 +29,7 @@ class FreshRSS_FeedDAO extends Minz_ModelPdo {
 		if (isset($errorInfo[0])) {
 			if ($errorInfo[0] === FreshRSS_DatabaseDAO::ER_BAD_FIELD_ERROR || $errorInfo[0] === FreshRSS_DatabaseDAOPGSQL::UNDEFINED_COLUMN) {
 				$errorLines = explode("\n", $errorInfo[2], 2);	// The relevant column name is on the first line, other lines are noise
-				foreach (['kind'] as $column) {
+				foreach (['kind', 'lastUpdateSuccess'] as $column) {
 					if (str_contains($errorLines[0], $column)) {
 						return $this->addColumn($column);
 					}

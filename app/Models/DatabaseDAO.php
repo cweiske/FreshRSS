@@ -138,6 +138,7 @@ class FreshRSS_DatabaseDAO extends Minz_ModelPdo {
 			'website',
 			'description',
 			'lastUpdate',
+			'lastUpdateSuccess',
 			'priority',
 			'pathEntries',
 			'httpAuth',

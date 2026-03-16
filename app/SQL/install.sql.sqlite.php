@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `feed` (
 	`website` VARCHAR(32768),
 	`description` TEXT,
 	`lastUpdate` BIGINT DEFAULT 0,
+	`lastUpdateSuccess` BIGINT DEFAULT 0,
 	`priority` TINYINT(2) NOT NULL DEFAULT 10,
 	`pathEntries` VARCHAR(4096) DEFAULT NULL,
 	`httpAuth` VARCHAR(1024) DEFAULT NULL,

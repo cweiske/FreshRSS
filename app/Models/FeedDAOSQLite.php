@@ -13,7 +13,7 @@ class FreshRSS_FeedDAOSQLite extends FreshRSS_FeedDAOPGSQL {
 	public function autoUpdateDb(array $errorInfo): bool {
 		$columns = $this->fetchColumn("PRAGMA table_info('feed')", 1);
 		if ($columns !== null) {
-			foreach (['kind'] as $column) {
+			foreach (['kind', 'lastUpdateSuccess'] as $column) {
 				if (!in_array($column, $columns, true)) {
 					return $this->addColumn($column);
 				}

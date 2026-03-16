@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `_feed` (
 	`website` TEXT CHARACTER SET latin1 COLLATE latin1_bin,
 	`description` TEXT,
 	`lastUpdate` BIGINT DEFAULT 0,
+	`lastUpdateSuccess` BIGINT DEFAULT 0,
 	`priority` TINYINT(2) NOT NULL DEFAULT 10,
 	`pathEntries` VARCHAR(4096) DEFAULT NULL,
 	`httpAuth` VARCHAR(1024) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
