@@ -230,10 +230,18 @@ class FreshRSS_FeedDAO extends Minz_ModelPdo {
 	 * @see updateCachedValues()
 	 */
 	public function updateLastUpdate(int $id, bool $inError = false, int $mtime = 0): int|false {
-		$sql = <<<'SQL'
-			UPDATE `_feed` SET `lastUpdate`=:last_update, error=:error WHERE id=:id
-			SQL;
-		$stm = $this->pdo->prepare($sql);
+		if ($inError) {
+			$sql = <<<'SQL'
+				    UPDATE `_feed` SET `lastUpdate`=:last_update, error=:error WHERE id=:id
+				SQL;
+			$stm = $this->pdo->prepare($sql);
+		} else {
+			$sql = <<<'SQL'
+				    UPDATE `_feed` SET `lastUpdate`=:last_update, `lastUpdateSuccess`=:last_update_success, error=:error WHERE id=:id
+				SQL;
+			$stm = $this->pdo->prepare($sql);
+			$stm !== false && $stm->bindValue(':last_update_success', $mtime, PDO::PARAM_INT);
+		}
 		if ($stm !== false &&
 			$stm->bindValue(':last_update', $mtime <= 0 ? time() : $mtime, PDO::PARAM_INT) &&
 			$stm->bindValue(':error', $inError ? 1 : 0, PDO::PARAM_INT) &&
@@ -242,6 +250,10 @@ class FreshRSS_FeedDAO extends Minz_ModelPdo {
 			return $stm->rowCount();
 		} else {
 			$info = $stm === false ? $this->pdo->errorInfo() : $stm->errorInfo();
+			/** @var array{0:string,1:int,2:string} $info */
+			if ($this->autoUpdateDb($info)) {
+				return $this->updateLastUpdate($id, $inError, $mtime);
+			}
 			Minz_Log::warning(__METHOD__ . ' error: ' . $sql . ' : ' . json_encode($info));
 			return false;
 		}
